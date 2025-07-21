@@ -130,10 +130,13 @@ function setupEventListeners() {
  * Mengatur fungsionalitas toggle sidebar dan responsivitas.
  */
 function setupSidebarToggle() {
-    // isSidebarOpen: true jika sidebar terbuka, false jika tertutup
-    let isSidebarOpen = false; 
+    // isSidebarOpen: true jika sidebar terbuka, false jika tertutup di mode mobile.
+    // Ini adalah state yang dikontrol oleh interaksi pengguna di mobile.
+    // Di desktop, sidebar akan selalu terbuka secara visual.
+    let isSidebarOpen = window.innerWidth >= 768; // Default: terbuka di desktop, tertutup di mobile
 
-    const applySidebarState = () => {
+    // Fungsi untuk menerapkan kelas CSS berdasarkan isSidebarOpen dan ukuran layar
+    const applySidebarVisuals = () => {
         const isMobile = window.innerWidth < 768;
 
         if (isMobile) {
@@ -144,16 +147,16 @@ function setupSidebarToggle() {
             dom.mainContent.classList.add('ml-0');
             dom.sidebarOpenBtn.classList.remove('hidden'); // Tombol buka selalu terlihat di mobile
 
-            if (isSidebarOpen) {
+            if (isSidebarOpen) { // Jika sidebar seharusnya terbuka di mobile
                 dom.sidebar.classList.add('translate-x-0');
                 dom.sidebar.classList.remove('-translate-x-full');
-                dom.sidebarCloseBtn.classList.remove('hidden'); // Tombol tutup terlihat saat sidebar terbuka
-                dom.sidebarOpenBtn.classList.add('hidden'); // Tombol buka tersembunyi saat sidebar terbuka
-            } else {
+                dom.sidebarCloseBtn.classList.remove('hidden'); // Tombol tutup terlihat
+                dom.sidebarOpenBtn.classList.add('hidden'); // Tombol buka tersembunyi
+            } else { // Jika sidebar seharusnya tertutup di mobile
                 dom.sidebar.classList.add('-translate-x-full');
                 dom.sidebar.classList.remove('translate-x-0');
-                dom.sidebarCloseBtn.classList.add('hidden'); // Tombol tutup tersembunyi saat sidebar tertutup
-                dom.sidebarOpenBtn.classList.remove('hidden'); // Tombol buka terlihat saat sidebar tertutup
+                dom.sidebarCloseBtn.classList.add('hidden'); // Tombol tutup tersembunyi
+                dom.sidebarOpenBtn.classList.remove('hidden'); // Tombol buka terlihat
             }
         } else {
             // Perilaku desktop: sidebar mendorong konten
@@ -165,43 +168,36 @@ function setupSidebarToggle() {
             dom.mainContent.classList.add('ml-64');
             dom.sidebarOpenBtn.classList.add('hidden'); // Tombol buka selalu tersembunyi di desktop
             dom.sidebarCloseBtn.classList.add('hidden'); // Tombol tutup selalu tersembunyi di desktop
-            isSidebarOpen = true; // Di desktop, sidebar dianggap selalu terbuka
+            // isSidebarOpen tidak perlu diubah di sini, karena di desktop selalu terbuka secara visual.
+            // isSidebarOpen hanya relevan untuk state di mobile.
         }
     };
 
-    // Fungsi untuk membuka sidebar
+    // Fungsi untuk membuka sidebar (hanya mengubah state isSidebarOpen)
     const openSidebar = () => {
         isSidebarOpen = true;
-        applySidebarState();
+        applySidebarVisuals(); // Terapkan perubahan visual
     };
 
-    // Fungsi untuk menutup sidebar
+    // Fungsi untuk menutup sidebar (hanya mengubah state isSidebarOpen)
     const closeSidebar = () => {
         isSidebarOpen = false;
-        applySidebarState();
+        applySidebarVisuals(); // Terapkan perubahan visual
     };
 
+    // Fungsi untuk menangani perubahan ukuran jendela
+    // Fungsi ini hanya akan menerapkan visual, tidak mengubah state isSidebarOpen
     const handleResize = () => {
-        const isMobile = window.innerWidth < 768;
-
-        // Atur status awal berdasarkan default mobile/desktop
-        if (isMobile) {
-            // Jika beralih ke mobile, pastikan sidebar tertutup secara default
-            isSidebarOpen = false; 
-        } else {
-            // Jika beralih ke desktop, pastikan sidebar terbuka secara default
-            isSidebarOpen = true; 
-        }
-        applySidebarState();
+        applySidebarVisuals();
     };
 
     // Panggil sekali saat dimuat untuk mengatur status awal dengan benar
-    handleResize(); 
+    applySidebarVisuals(); // Penerapan visual awal berdasarkan state isSidebarOpen awal
 
     // Menetapkan event listener untuk tombol buka dan tutup
     dom.sidebarOpenBtn.onclick = openSidebar;
     dom.sidebarCloseBtn.onclick = closeSidebar;
-    window.onresize = handleResize;
+    window.onresize = handleResize; // Event listener untuk perubahan ukuran jendela
 }
 
 /**
