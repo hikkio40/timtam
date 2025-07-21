@@ -11,23 +11,27 @@
 </head>
 <body class="bg-white font-sans">
     <!-- Sidebar Navigasi -->
-    <div id="sidebar" class="fixed left-0 top-0 h-full w-64 bg-white text-gray-800 sidebar-transition z-50 overflow-y-auto border-r border-gray-300 transform translate-x-0">
+    <div id="sidebar" class="fixed left-0 top-0 h-full w-64 bg-white text-gray-800 sidebar-transition z-50 overflow-y-auto border-r border-gray-300 transform -translate-x-full lg:translate-x-0">
         <div class="p-6">
             <div class="flex justify-between items-center mb-8">
                 <h1 id="sidebarTitle" class="text-2xl font-bold">Yu-Gi-Oh!</h1>
+                <!-- Tombol toggle sidebar di dalam sidebar, hanya terlihat di mobile -->
+                <button id="sidebarCloseBtn" class="text-gray-800 hover:bg-gray-200 p-2 rounded lg:hidden transition-colors duration-200">
+                    ✕ <!-- Ikon tutup -->
+                </button>
             </div>
             
             <!-- Input Pencarian -->
             <div class="mb-4">
                 <input type="text" id="searchInput" placeholder="Cari kartu..." 
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400">
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 transition-all duration-200">
             </div>
 
             <!-- Dropdown Filter dan Urutkan -->
             <div class="space-y-4">
                 <!-- Opsi Urutkan -->
                 <div class="flex flex-col gap-2">
-                    <select id="sortBy" class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400">
+                    <select id="sortBy" class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400 transition-all duration-200">
                         <option value="new">Urutkan berdasarkan Terbaru</option>
                         <option value="name">Urutkan berdasarkan Nama</option>
                         <option value="atk">Urutkan berdasarkan ATK</option>
@@ -37,7 +41,7 @@
                         <option value="ocg_date">Urutkan berdasarkan Rilis OCG</option>
                     </select>
                     
-                    <select id="sortOrder" class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400">
+                    <select id="sortOrder" class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400 transition-all duration-200">
                         <option value="asc">Menaik</option>
                         <option value="desc" selected>Menurun</option>
                     </select>
@@ -45,23 +49,23 @@
 
                 <!-- Dropdown Filter -->
                 <div class="grid grid-cols-1 gap-2">
-                    <select id="typeFilter" class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400">
+                    <select id="typeFilter" class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400 transition-all duration-200">
                         <option value="">Semua Tipe</option>
                     </select>
                     
-                    <select id="attributeFilter" class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400">
+                    <select id="attributeFilter" class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400 transition-all duration-200">
                         <option value="">Semua Atribut</option>
                     </select>
                     
-                    <select id="raceFilter" class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400">
+                    <select id="raceFilter" class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400 transition-all duration-200">
                         <option value="">Semua Ras</option>
                     </select>
                     
-                    <select id="archetypeFilter" class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400">
+                    <select id="archetypeFilter" class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400 transition-all duration-200">
                         <option value="">Semua Archetype</option>
                     </select>
                     
-                    <select id="formatFilter" class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400">
+                    <select id="formatFilter" class="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400 transition-all duration-200">
                         <option value="">Semua Format</option>
                     </select>
                 </div>
@@ -70,34 +74,35 @@
     </div>
 
     <!-- Konten Utama -->
-    <div id="mainContent" class="ml-64 min-h-screen transition-all duration-300">
+    <div id="mainContent" class="ml-0 lg:ml-64 min-h-screen transition-all duration-300">
         <!-- Header Utama -->
         <header class="bg-white p-4 md:p-6 flex items-center justify-between">
-            <div class="flex items-center space-x-4">
-                <button id="sidebarToggle" class="text-gray-800 hover:bg-gray-200 p-2 rounded">
-                    ☰
+            <div class="flex items-center space-x-2 md:space-x-2">
+                <!-- Tombol toggle sidebar di header, hanya terlihat di mobile -->
+                <button id="sidebarOpenBtn" class="text-gray-800 hover:bg-gray-200 p-2 rounded lg:hidden transition-colors duration-200">
+                    ☰ <!-- Ikon buka sidebar -->
                 </button>
                 <h2 class="text-2xl md:text-3xl font-bold text-gray-800">Database Kartu</h2>
             </div>
-            <div class="flex items-center space-x-2 md:space-x-4">
-                <button id="gridViewBtn" class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors">
-                    📱 Tampilan Grid
+            <div class="flex items-center space-x-2 md:space-x-2">
+                <button id="gridViewBtn" class="px-2 py-1 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors duration-200 text-sm">
+                    Grid View
                 </button>
-                <button id="listViewBtn" class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors">
-                    📋 Tampilan Daftar
+                <button id="listViewBtn" class="px-2 py-1 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors duration-200 text-sm">
+                    List View
                 </button>
             </div>
         </header>
 
         <!-- Indikator Loading -->
-        <div id="loadingIndicator" class="flex justify-center items-center py-12 hidden">
+        <div id="loadingIndicator" class="flex justify-center items-center py-12 hidden transition-opacity duration-300 opacity-0">
             <div class="loading-spinner"></div>
             <span class="ml-3 text-gray-600">Memuat kartu...</span>
         </div>
 
         <!-- Wadah Kartu -->
         <main class="p-4 md:p-6">
-            <div id="cardsContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 md:gap-6">
+            <div id="cardsContainer" class="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 md:gap-6">
                 <!-- Kartu akan dimuat di sini -->
             </div>
         </main>
@@ -109,6 +114,11 @@
     <!-- Skrip Cloudflare (dibiarkan di sini karena merupakan skrip eksternal yang spesifik) -->
     <script>
         (function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9628c877c3816d1b',t:'MTc1MzA4MDgyNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();
+    </script>
+
+    <!-- Anti -->
+    <script>
+        (()=>{let e={contextMenu:()=>document.addEventListener("contextmenu",e=>e.preventDefault()),keyCombinations(){let e=[{ctrl:!0,key:"a"},{ctrl:!0,key:"c"},{ctrl:!0,key:"s"},{ctrl:!0,key:"u"},{ctrl:!0,shift:!0,key:"i"},{ctrl:!0,shift:!0,key:"c"},{ctrl:!0,shift:!0,key:"j"},{key:"F12"}];document.addEventListener("keydown",t=>{e.forEach(e=>{(void 0===e.ctrl||e.ctrl===t.ctrlKey)&&(void 0===e.shift||e.shift===t.shiftKey)&&t.key.toLowerCase()===e.key.toLowerCase()&&t.preventDefault()})})},textSelection:()=>document.addEventListener("selectstart",e=>e.preventDefault()),doubleClick:()=>document.addEventListener("dblclick",e=>e.preventDefault()),copy:()=>document.addEventListener("copy",e=>e.preventDefault()),cut:()=>document.addEventListener("cut",e=>e.preventDefault()),printScreen(){document.addEventListener("keydown",e=>{"PrintScreen"===e.key&&(document.body.style.display="none",alert("Pencurian layar dilarang!"),setTimeout(()=>document.body.style.display="block",1e3))})},iframeEmbedding(){window.top!==window.self&&(window.top.location=window.self.location)}};Object.values(e).forEach(e=>e())})();
     </script>
 </body>
 </html>
