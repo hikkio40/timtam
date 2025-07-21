@@ -1,0 +1,22 @@
+/* Efek hover untuk kartu */
+.card-hover:hover {
+    transform: translateY(-4px);
+}
+/* Transisi untuk sidebar */
+.sidebar-transition {
+    transition: all 0.3s ease;
+}
+/* Gaya spinner loading */
+.loading-spinner {
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3498db; /* Biru untuk visibilitas indikator loading */
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+/* Animasi putar untuk spinner */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
