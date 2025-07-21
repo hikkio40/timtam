@@ -47,6 +47,9 @@ const dom = {
 // ID Filter yang merujuk langsung ke dropdown select
 const FILTER_IDS = ['typeFilter', 'attributeFilter', 'raceFilter', 'archetypeFilter', 'formatFilter'];
 
+// Variabel global untuk fungsi closeSidebar
+let closeSidebarFunction;
+
 /**
  * Fungsi utilitas untuk mendapatkan elemen berdasarkan ID.
  * @param {string} id - ID elemen.
@@ -82,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeFilters();
     setupEventListeners();
     setupInfiniteScroll();
-    setupSidebarToggle();
+    setupSidebarToggle(); // Panggil ini terlebih dahulu untuk mendapatkan closeSidebarFunction
     showHomePage();
 });
 
@@ -101,6 +104,10 @@ function setupEventListeners() {
     dom.searchInput.addEventListener('keypress', e => {
         if (e.key === 'Enter') {
             performSearch();
+            // Panggil fungsi closeSidebar jika ada dan perangkat adalah mobile
+            if (closeSidebarFunction && window.innerWidth < 768) {
+                closeSidebarFunction();
+            }
         }
     });
 
@@ -180,10 +187,13 @@ function setupSidebarToggle() {
     };
 
     // Fungsi untuk menutup sidebar (hanya mengubah state isSidebarOpen)
-    const closeSidebar = () => {
+    const _closeSidebar = () => { // Ganti nama menjadi _closeSidebar untuk menghindari konflik
         isSidebarOpen = false;
         applySidebarVisuals(); // Terapkan perubahan visual
     };
+
+    // Tetapkan _closeSidebar ke variabel global agar bisa diakses dari setupEventListeners
+    closeSidebarFunction = _closeSidebar;
 
     // Fungsi untuk menangani perubahan ukuran jendela
     // Fungsi ini hanya akan menerapkan visual, tidak mengubah state isSidebarOpen
@@ -196,7 +206,7 @@ function setupSidebarToggle() {
 
     // Menetapkan event listener untuk tombol buka dan tutup
     dom.sidebarOpenBtn.onclick = openSidebar;
-    dom.sidebarCloseBtn.onclick = closeSidebar;
+    dom.sidebarCloseBtn.onclick = _closeSidebar; // Gunakan _closeSidebar
     window.onresize = handleResize; // Event listener untuk perubahan ukuran jendela
 }
 
@@ -734,12 +744,14 @@ function createCardHTML(card, isGridView) {
          */
         async function downloadImage(imageUrl, filename) {
             try {
-                // Mencoba fetch dengan mode 'no-cors'. Ini akan menghasilkan respons 'opaque'
-                // yang tidak dapat diakses untuk blob() jika server tidak mengizinkan CORS.
-                const response = await fetch(imageUrl, { mode: 'no-cors' }); 
+                // Hapus mode 'no-cors' agar browser dapat melakukan pemeriksaan CORS yang tepat.
+                // Jika server tidak mengizinkan CORS, fetch ini akan gagal.
+                const response = await fetch(imageUrl); 
                 
-                // Mencoba membuat Blob. Ini akan gagal jika respons 'opaque'
-                // dan akan memicu blok catch.
+                if (!response.ok) {
+                    throw new Error(`Gagal mengunduh gambar: ${response.statusText}`);
+                }
+
                 const blob = await response.blob(); 
                 const url = URL.createObjectURL(blob);
                 const a = createElement('a');
@@ -752,11 +764,11 @@ function createCardHTML(card, isGridView) {
                 URL.revokeObjectURL(url);
             } catch (error) {
                 console.error("Gagal mengunduh langsung, beralih ke membuka di tab baru:", error);
-                // Fallback: membuka di tab baru jika unduhan langsung gagal (misal: karena kebijakan CORS)
+                // Fallback: membuka di tab baru jika unduhan langsung gagal (misal: karena kebijakan CORS atau masalah jaringan)
                 const a = createElement('a');
                 Object.assign(a, {
                     href: imageUrl,
-                    download: filename, // Atribut 'download' ini mungkin tidak berfungsi saat membuka di tab baru untuk sumber daya lintas-asal
+                    download: filename, 
                     target: '_blank',
                     rel: 'noopener noreferrer'
                 });
